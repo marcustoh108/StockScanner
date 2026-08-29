@@ -1,0 +1,37 @@
+# Render.com deploy config (https://render.com/docs/blueprint-spec).
+# In the Render dashboard: New > Blueprint > point at this repo, then set the
+# secret env vars below (JWT_SECRET, and the Apple/Google IAP vars once you
+# have those credentials -- see README "Go-Live checklist").
+services:
+  - type: web
+    name: stockscanner-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /api/health
+    disk:
+      name: stockscanner-data
+      mountPath: /app/backend/data
+      sizeGB: 1
+    envVars:
+      - key: ENV
+        value: production
+      - key: DATABASE_URL
+        value: sqlite:////app/backend/data/stockscanner.db
+      - key: ALLOWED_ORIGINS
+        value: capacitor://localhost,ionic://localhost,http://localhost,https://localhost
+      - key: JWT_SECRET
+        generateValue: true
+      # Set these once you have App Store Connect / Play Console credentials:
+      - key: APPLE_BUNDLE_ID
+        sync: false
+      - key: APPLE_ROOT_CERT_DIR
+        sync: false
+      - key: APPLE_ENVIRONMENT
+        value: Sandbox
+      - key: APPLE_APP_APPLE_ID
+        sync: false
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        sync: false
+      - key: GOOGLE_PLAY_PACKAGE_NAME
+        sync: false

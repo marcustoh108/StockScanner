@@ -10,3 +10,14 @@ env/
 node_modules/
 *.log
 .cache/
+
+# Runtime data / secrets -- never commit these
+*.db
+backend/secrets/
+backend/apple_root_certs/
+google-play-service-account*.json
+
+# Capacitor / mobile build outputs (native projects are generated locally via
+# `npx cap add ios|android` and then committed once customized -- see mobile/README.md)
+mobile/node_modules/
+mobile/dist/

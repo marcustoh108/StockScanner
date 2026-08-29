@@ -7,3 +7,11 @@ requests==2.32.3
 beautifulsoup4==4.12.3
 lxml==5.2.2
 python-multipart==0.0.9
+
+# Auth / subscriptions / mobile backend
+sqlalchemy==2.0.35
+pyjwt==2.9.0
+email-validator==2.2.0
+app-store-server-library>=1.4,<2.0
+google-api-python-client>=2.140,<3.0
+google-auth>=2.34,<3.0

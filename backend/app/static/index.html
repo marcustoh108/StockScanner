@@ -10,9 +10,29 @@
   <header class="topbar">
     <h1>StockScanner</h1>
     <p class="tagline">Options premium-selling scanner &mdash; not investment advice.</p>
+    <p class="legal-links"><a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a> &middot; <a href="/support.html">Support</a></p>
   </header>
 
   <main class="container">
+    <section id="auth-panel" class="card auth-panel">
+      <div id="auth-forms">
+        <h2>Sign in</h2>
+        <form id="auth-form" class="auth-form">
+          <input id="auth-email" type="email" placeholder="Email" autocomplete="email" required />
+          <input id="auth-password" type="password" placeholder="Password (min 8 chars)" autocomplete="current-password" required minlength="8" />
+          <div class="auth-buttons">
+            <button type="submit" data-mode="login">Log in</button>
+            <button type="submit" data-mode="signup" class="secondary">Sign up</button>
+          </div>
+        </form>
+        <p class="auth-note">This web view is for testing. The paid subscription (App Store / Google Play, $39.90/mo) is purchased in the mobile app.</p>
+      </div>
+      <div id="auth-account" hidden>
+        <p>Signed in as <strong id="account-email"></strong> &middot; Subscription: <span id="account-sub-status">unknown</span></p>
+        <button id="logout-btn" class="secondary">Log out</button>
+      </div>
+    </section>
+
     <form id="search-form" class="search-form">
       <input id="ticker-input" type="text" placeholder="Ticker (e.g. AAPL)" autocomplete="off" required />
       <input id="positions-input" type="text" placeholder="Existing positions, comma-separated (optional)" autocomplete="off" />

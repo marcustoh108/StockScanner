@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>StockScanner</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>StockScanner</h1>
+    <p class="tagline">Options premium-selling scanner &mdash; not investment advice.</p>
+  </header>
+
+  <main class="container">
+    <!-- ===== AUTH VIEW ===== -->
+    <section id="view-auth" class="view">
+      <div class="card">
+        <h2 id="auth-title">Log in</h2>
+        <form id="auth-form" class="stacked-form">
+          <input id="auth-email" type="email" placeholder="Email" autocomplete="email" required />
+          <input id="auth-password" type="password" placeholder="Password (min 8 chars)" autocomplete="current-password" required minlength="8" />
+          <button type="submit" id="auth-submit-btn">Log in</button>
+        </form>
+        <p class="switch-mode">
+          <span id="auth-switch-prompt">Don't have an account?</span>
+          <a href="#" id="auth-switch-link">Sign up</a>
+        </p>
+        <p id="auth-error" class="error-text" hidden></p>
+      </div>
+    </section>
+
+    <!-- ===== PAYWALL VIEW ===== -->
+    <section id="view-paywall" class="view" hidden>
+      <div class="card paywall-card">
+        <h2>StockScanner Premium</h2>
+        <p class="price-line" id="price-line">$39.90 / month</p>
+        <ul class="feature-list">
+          <li>IV Score &amp; IV Rank (approx.)</li>
+          <li>EMA, ATR, support &amp; resistance</li>
+          <li>Earnings distance &amp; expected move</li>
+          <li>Bid/ask spread &amp; open interest</li>
+          <li>Whale activity, insider &amp; congress signals</li>
+          <li>Correlation to your existing positions</li>
+          <li>SELL PUT SPREAD / WAIT / AVOID call, explained</li>
+        </ul>
+        <button id="subscribe-btn">Subscribe &mdash; <span id="subscribe-price">$39.90/mo</span></button>
+        <button id="restore-btn" class="secondary">Restore purchases</button>
+        <p class="legal-fineprint">
+          Auto-renews monthly until cancelled. Manage or cancel anytime in your device's
+          subscription settings. See <a href="#" data-legal="terms">Terms</a> and
+          <a href="#" data-legal="privacy">Privacy Policy</a>.
+        </p>
+        <p id="paywall-error" class="error-text" hidden></p>
+        <button id="paywall-logout-btn" class="link-btn">Log out</button>
+      </div>
+    </section>
+
+    <!-- ===== MAIN APP VIEW ===== -->
+    <section id="view-main" class="view" hidden>
+      <div class="account-bar">
+        <span id="account-email"></span>
+        <button id="logout-btn" class="link-btn">Log out</button>
+      </div>
+
+      <form id="search-form" class="search-form">
+        <input id="ticker-input" type="text" placeholder="Ticker (e.g. AAPL)" autocomplete="off" required />
+        <input id="positions-input" type="text" placeholder="Existing positions, comma-separated (optional)" autocomplete="off" />
+        <button type="submit">Analyze</button>
+      </form>
+
+      <div id="status" class="status" hidden></div>
+
+      <section id="results" class="results" hidden>
+        <div id="recommendation" class="recommendation"></div>
+
+        <div class="grid">
+          <div class="card"><h2>Volatility</h2><dl id="vol-card"></dl></div>
+          <div class="card"><h2>Technicals</h2><dl id="tech-card"></dl></div>
+          <div class="card"><h2>Options / Liquidity</h2><dl id="options-card"></dl></div>
+          <div class="card"><h2>Earnings</h2><dl id="earnings-card"></dl></div>
+          <div class="card"><h2>Whale Activity</h2><dl id="whale-card"></dl></div>
+          <div class="card"><h2>Insider Buying</h2><dl id="insider-card"></dl></div>
+          <div class="card"><h2>Congress Activity</h2><dl id="congress-card"></dl></div>
+          <div class="card"><h2>Correlation to Positions</h2><dl id="correlation-card"></dl></div>
+        </div>
+
+        <div class="card reasons-card">
+          <h2>Why this recommendation</h2>
+          <ul id="reasons-list"></ul>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- `npx cap sync` (run after `npm install`) generates cordova.js / cordova_plugins.js
+       here automatically because cordova-plugin-purchase is a Cordova-compatible plugin;
+       that's what exposes the global `CdvPurchase` object purchases.js depends on. -->
+  <script src="config.js"></script>
+  <script src="purchases.js"></script>
+  <script src="api.js"></script>
+  <script src="render.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

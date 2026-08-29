@@ -1,83 +1,5 @@
-const form = document.getElementById("search-form");
-const tickerInput = document.getElementById("ticker-input");
-const positionsInput = document.getElementById("positions-input");
-const statusEl = document.getElementById("status");
-const resultsEl = document.getElementById("results");
-const recommendationEl = document.getElementById("recommendation");
-const reasonsList = document.getElementById("reasons-list");
-
-const authForm = document.getElementById("auth-form");
-const authForms = document.getElementById("auth-forms");
-const authAccount = document.getElementById("auth-account");
-const accountEmail = document.getElementById("account-email");
-const accountSubStatus = document.getElementById("account-sub-status");
-const logoutBtn = document.getElementById("logout-btn");
-
-const TOKEN_KEY = "stockscanner_token";
-
-function getToken() {
-  return localStorage.getItem(TOKEN_KEY);
-}
-
-function setToken(token) {
-  if (token) localStorage.setItem(TOKEN_KEY, token);
-  else localStorage.removeItem(TOKEN_KEY);
-}
-
-async function refreshAccountPanel() {
-  const token = getToken();
-  if (!token) {
-    authForms.hidden = false;
-    authAccount.hidden = true;
-    return;
-  }
-  try {
-    const resp = await fetch("/api/auth/me", { headers: { Authorization: `Bearer ${token}` } });
-    if (!resp.ok) throw new Error("session expired");
-    const data = await resp.json();
-    authForms.hidden = true;
-    authAccount.hidden = false;
-    accountEmail.textContent = data.email;
-    accountSubStatus.textContent = data.subscription.active
-      ? `active (${data.subscription.platform || "unknown"})`
-      : "no active subscription";
-  } catch {
-    setToken(null);
-    authForms.hidden = false;
-    authAccount.hidden = true;
-  }
-}
-
-authForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const mode = e.submitter?.dataset.mode || "login";
-  const email = document.getElementById("auth-email").value.trim();
-  const password = document.getElementById("auth-password").value;
-  setStatus(mode === "signup" ? "Creating account…" : "Logging in…");
-  try {
-    const resp = await fetch(`/api/auth/${mode}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await resp.json();
-    if (!resp.ok) throw new Error(data.detail || "Authentication failed");
-    setToken(data.access_token);
-    setStatus("");
-    await refreshAccountPanel();
-  } catch (err) {
-    setStatus(err.message, true);
-  }
-});
-
-logoutBtn.addEventListener("click", () => {
-  setToken(null);
-  resultsEl.hidden = true;
-  refreshAccountPanel();
-});
-
-refreshAccountPanel();
-
+// Renders an /api/analyze response into the results section. Shared shape
+// with the web demo's app.js (backend/app/static/app.js) -- keep them in sync.
 function fmt(value, suffix = "") {
   if (value === null || value === undefined || Number.isNaN(value)) return "—";
   return `${value}${suffix}`;
@@ -97,12 +19,6 @@ function row(dl, label, value) {
   dl.appendChild(dd);
 }
 
-function setStatus(message, isError = false) {
-  statusEl.hidden = !message;
-  statusEl.textContent = message;
-  statusEl.classList.toggle("error", isError);
-}
-
 function badgeClass(rec) {
   if (rec === "SELL PUT SPREAD") return "sell";
   if (rec === "WAIT") return "wait";
@@ -115,7 +31,9 @@ function badgeEmoji(rec) {
   return "🔴";
 }
 
-function render(data) {
+function renderAnalysis(data) {
+  const resultsEl = document.getElementById("results");
+  const recommendationEl = document.getElementById("recommendation");
   resultsEl.hidden = false;
 
   const rec = data.signal.recommendation;
@@ -204,6 +122,7 @@ function render(data) {
     row(corrCard, "Status", corr.note || "No positions supplied");
   }
 
+  const reasonsList = document.getElementById("reasons-list");
   reasonsList.innerHTML = "";
   data.signal.reasons.forEach((r) => {
     const li = document.createElement("li");
@@ -212,44 +131,3 @@ function render(data) {
     reasonsList.appendChild(li);
   });
 }
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const ticker = tickerInput.value.trim();
-  if (!ticker) return;
-  const positions = positionsInput.value.trim();
-
-  resultsEl.hidden = true;
-  setStatus(`Analyzing ${ticker.toUpperCase()}…`);
-
-  const token = getToken();
-  if (!token) {
-    setStatus("Sign in above to analyze a ticker.", true);
-    return;
-  }
-
-  try {
-    const params = new URLSearchParams({ ticker });
-    if (positions) params.set("positions", positions);
-    const resp = await fetch(`/api/analyze?${params.toString()}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (resp.status === 401) {
-      setToken(null);
-      await refreshAccountPanel();
-      throw new Error("Session expired — please sign in again.");
-    }
-    if (resp.status === 402) {
-      throw new Error("An active subscription is required. Subscribe in the mobile app ($39.90/mo).");
-    }
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.detail || `Request failed (${resp.status})`);
-    }
-    const data = await resp.json();
-    setStatus("");
-    render(data);
-  } catch (err) {
-    setStatus(err.message || "Something went wrong.", true);
-  }
-});
