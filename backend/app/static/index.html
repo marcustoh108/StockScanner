@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StockScanner &mdash; Options Analysis</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>StockScanner</h1>
+    <p class="tagline">Options premium-selling scanner &mdash; not investment advice.</p>
+  </header>
+
+  <main class="container">
+    <form id="search-form" class="search-form">
+      <input id="ticker-input" type="text" placeholder="Ticker (e.g. AAPL)" autocomplete="off" required />
+      <input id="positions-input" type="text" placeholder="Existing positions, comma-separated (optional)" autocomplete="off" />
+      <button type="submit">Analyze</button>
+    </form>
+
+    <div id="status" class="status" hidden></div>
+
+    <section id="results" class="results" hidden>
+      <div id="recommendation" class="recommendation"></div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Volatility</h2>
+          <dl id="vol-card"></dl>
+        </div>
+        <div class="card">
+          <h2>Technicals</h2>
+          <dl id="tech-card"></dl>
+        </div>
+        <div class="card">
+          <h2>Options / Liquidity</h2>
+          <dl id="options-card"></dl>
+        </div>
+        <div class="card">
+          <h2>Earnings</h2>
+          <dl id="earnings-card"></dl>
+        </div>
+        <div class="card">
+          <h2>Whale Activity</h2>
+          <dl id="whale-card"></dl>
+        </div>
+        <div class="card">
+          <h2>Insider Buying</h2>
+          <dl id="insider-card"></dl>
+        </div>
+        <div class="card">
+          <h2>Congress Activity</h2>
+          <dl id="congress-card"></dl>
+        </div>
+        <div class="card">
+          <h2>Correlation to Positions</h2>
+          <dl id="correlation-card"></dl>
+        </div>
+      </div>
+
+      <div class="card reasons-card">
+        <h2>Why this recommendation</h2>
+        <ul id="reasons-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
